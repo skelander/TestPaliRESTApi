@@ -1,0 +1,43 @@
+@TestPaliRESTApi_HostAddress = http://localhost:5048
+
+### Simple palindrome
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/racecar
+Accept: application/json
+
+###
+
+### Not a palindrome
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/hello
+Accept: application/json
+
+###
+
+### Mixed case (still a palindrome)
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/RaceCar
+Accept: application/json
+
+###
+
+### Phrase with spaces
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/A%20man%20a%20plan%20a%20canal%20Panama
+Accept: application/json
+
+###
+
+### Phrase with punctuation
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/Was%20it%20a%20car%20or%20a%20cat%20I%20saw%3F
+Accept: application/json
+
+###
+
+### Number palindrome
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/12321
+Accept: application/json
+
+###
+
+### Edge case: whitespace only (returns true)
+GET {{TestPaliRESTApi_HostAddress}}/palindrome/%20%20%20
+Accept: application/json
+
+###
