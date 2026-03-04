@@ -189,7 +189,8 @@
   </div>
 
   <script>
-    const USERS = { 'admin': 'admin' };
+    const CREDENTIALS = { 'admin': 'admin' };
+    const MANAGED_USERS = ['1', '2', '3'];
     const FEATURES_KEY = 'features';
 
     function init() {
@@ -206,7 +207,7 @@
       const pass = document.getElementById('password').value;
       const errEl = document.getElementById('login-error');
 
-      if (USERS[user] && USERS[user] === pass) {
+      if (CREDENTIALS[user] && CREDENTIALS[user] === pass) {
         sessionStorage.setItem('user', user);
         errEl.style.display = 'none';
         showAdmin(user);
@@ -254,7 +255,7 @@
       const tbody = document.getElementById('toggle-rows');
       tbody.innerHTML = '';
 
-      Object.keys(USERS).forEach(user => {
+      MANAGED_USERS.forEach(user => {
         const enabled = perUser[user] !== false;
         const tr = document.createElement('tr');
         tr.innerHTML = `
