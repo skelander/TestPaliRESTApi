@@ -25,10 +25,7 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     }
 
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
 
     p.subtitle {
       color: #666;
@@ -36,23 +33,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .input-row {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-    }
-
-    label {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #444;
-    }
+    .input-row { display: flex; gap: 0.5rem; }
 
     input {
       flex: 1;
@@ -80,8 +61,6 @@
     button:hover { background: #333; }
     button:disabled { background: #999; cursor: default; }
 
-    .btn-full { width: 100%; margin-top: 0.25rem; }
-
     .result {
       margin-top: 1.25rem;
       padding: 1rem 1.25rem;
@@ -97,13 +76,6 @@
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 0.25rem;
-    }
-
-    .error-msg {
-      color: #b71c1c;
-      font-size: 0.85rem;
-      margin-top: 0.75rem;
-      display: none;
     }
 
     .user-bar {
@@ -125,8 +97,6 @@
 
     .logout-btn:hover { background: #ddd; }
 
-    #login-view, #app-view { display: none; }
-
     .feature-off {
       margin-top: 1rem;
       padding: 1rem 1.25rem;
@@ -139,114 +109,60 @@
 </head>
 <body>
   <div class="card">
-
-    <!-- Login -->
-    <div id="login-view">
-      <h1>Sign in</h1>
-      <p class="subtitle">Enter your username and password to continue.</p>
-
-      <div class="field">
-        <label for="username">Username</label>
-        <input id="username" type="text" placeholder="e.g. 1" autocomplete="username" />
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" />
-      </div>
-
-      <button class="btn-full" onclick="login()">Sign in</button>
-      <div class="error-msg" id="login-error">Incorrect username or password.</div>
+    <div class="user-bar">
+      <span id="greeting"></span>
+      <button class="logout-btn" onclick="logout()">Sign out</button>
     </div>
 
-    <!-- App -->
-    <div id="app-view">
-      <div class="user-bar">
-        <span id="greeting"></span>
-        <button class="logout-btn" onclick="logout()">Sign out</button>
+    <h1>Palindrome Checker</h1>
+    <p class="subtitle">Type a word or phrase to check if it reads the same forwards and backwards.</p>
+
+    <div id="checker-enabled">
+      <div class="input-row">
+        <input id="input" type="text" placeholder="e.g. racecar" />
+        <button id="btn" onclick="check()">Check</button>
       </div>
 
-      <h1>Palindrome Checker</h1>
-      <p class="subtitle">Type a word or phrase to check if it reads the same forwards and backwards.</p>
-
-      <div id="checker-enabled">
-        <div class="input-row">
-          <input id="input" type="text" placeholder="e.g. racecar" />
-          <button id="btn" onclick="check()">Check</button>
-        </div>
-
-        <div class="result" id="result">
-          <div class="label" id="result-label"></div>
-          <div id="result-message"></div>
-        </div>
-      </div>
-
-      <div id="checker-disabled" class="feature-off" style="display:none;">
-        The palindrome checker is currently disabled.
+      <div class="result" id="result">
+        <div class="label" id="result-label"></div>
+        <div id="result-message"></div>
       </div>
     </div>
 
+    <div id="checker-disabled" class="feature-off" style="display:none;">
+      The palindrome checker is currently disabled.
+    </div>
   </div>
 
   <script>
     const API = 'https://palindrome-rikard.fly.dev/palindrome';
-    const USERS = { '1': '1', '2': '2', '3': '3' };
     const FEATURES_KEY = 'features';
-
-    function isApiEnabled(user) {
-      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
-      const perUser = features.api || {};
-      return perUser[user] !== false; // enabled by default
-    }
+    const VALID_USERS = ['1', '2', '3'];
 
     function init() {
       const user = sessionStorage.getItem('user');
-      if (user) {
-        showApp(user);
-      } else {
-        document.getElementById('login-view').style.display = 'block';
+      if (!user || !VALID_USERS.includes(user)) {
+        window.location.href = 'login.html';
+        return;
       }
-    }
-
-    function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value;
-      const errEl = document.getElementById('login-error');
-
-      if (USERS[user] && USERS[user] === pass) {
-        sessionStorage.setItem('user', user);
-        errEl.style.display = 'none';
-        showApp(user);
-      } else {
-        errEl.style.display = 'block';
-      }
-    }
-
-    function logout() {
-      sessionStorage.removeItem('user');
-      document.getElementById('app-view').style.display = 'none';
-      document.getElementById('result').style.display = 'none';
-      document.getElementById('input').value = '';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-      document.getElementById('login-view').style.display = 'block';
-    }
-
-    function showApp(user) {
-      document.getElementById('login-view').style.display = 'none';
       document.getElementById('greeting').textContent = `Signed in as user ${user}`;
-      document.getElementById('app-view').style.display = 'block';
-
       const apiOn = isApiEnabled(user);
       document.getElementById('checker-enabled').style.display = apiOn ? 'block' : 'none';
       document.getElementById('checker-disabled').style.display = apiOn ? 'none' : 'block';
     }
 
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        if (document.getElementById('login-view').style.display !== 'none') login();
-        else check();
-      }
-    });
+    function isApiEnabled(user) {
+      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
+      const perUser = features.api || {};
+      return perUser[user] !== false;
+    }
+
+    function logout() {
+      sessionStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
 
     async function check() {
       const input = document.getElementById('input').value.trim();
