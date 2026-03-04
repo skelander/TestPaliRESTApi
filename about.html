@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Overview — Palindrome</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 3rem 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+
+    .back-link {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.35rem;
+    }
+
+    .tagline {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4f46e5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    .section {
+      border-top: 1px solid #f3f4f6;
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #374151;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    .stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .tag {
+      padding: 0.3rem 0.75rem;
+      background: #f5f3ff;
+      color: #4338ca;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: #374151;
+    }
+
+    .flow-step {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-weight: 500;
+    }
+
+    .arrow { color: #9ca3af; }
+
+    code {
+      background: #f3f4f6;
+      color: #4f46e5;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    td {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+
+    td:first-child {
+      color: #6b7280;
+      width: 9rem;
+      font-weight: 500;
+    }
+
+    td:last-child { color: #111; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a class="back-link" href="login.html">← Back to sign in</a>
+
+    <h1>Technical Overview</h1>
+    <p class="tagline">How the Palindrome app is built and deployed.</p>
+
+    <div class="section">
+      <h2>What it does</h2>
+      <p>
+        A REST API that checks whether a word or phrase is a palindrome — meaning it reads the same forwards and backwards (ignoring spaces, punctuation and casing). A simple web frontend lets users sign in and use the API, while an admin page controls access per user.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Tech stack</h2>
+      <div class="stack">
+        <span class="tag">.NET 10</span>
+        <span class="tag">ASP.NET Core</span>
+        <span class="tag">xUnit</span>
+        <span class="tag">Docker</span>
+        <span class="tag">Fly.io</span>
+        <span class="tag">GitHub Actions</span>
+        <span class="tag">GitHub Pages</span>
+        <span class="tag">HTML / CSS / JS</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Architecture</h2>
+      <p>
+        The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes two controllers:
+      </p>
+      <table>
+        <tr><td><code>GET /palindrome/{input}</code></td><td>Checks if the input is a palindrome and returns a JSON result with <code>input</code>, <code>isPalindrome</code>, and <code>message</code>.</td></tr>
+        <tr><td><code>GET /features</code></td><td>Returns the current API access flag for each user.</td></tr>
+        <tr><td><code>PUT /features/{user}</code></td><td>Enables or disables API access for a specific user.</td></tr>
+      </table>
+      <p style="margin-top:0.75rem">
+        The frontend is a set of <strong>static HTML pages</strong> hosted on <strong>GitHub Pages</strong>. There are no frameworks — just vanilla HTML, CSS and JavaScript calling the API over HTTPS.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Code structure</h2>
+      <p>
+        The backend follows a layered pattern. The controller handles HTTP — it receives the request and returns a response. The service holds the business logic — it knows what a palindrome is. The controller depends only on an <em>interface</em> (<code>IPalindromeService</code>), never the concrete class. This makes it easy to swap implementations and to test each layer independently.
+      </p>
+      <p>
+        Feature flags are stored in an in-memory dictionary (a <code>ConcurrentDictionary</code> singleton). They are shared across all requests, so a change made by the admin is immediately visible to all users — but they reset if the API restarts.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Testing</h2>
+      <p>
+        There are two layers of tests, both written with <strong>xUnit</strong>:
+      </p>
+      <table>
+        <tr><td>Unit tests</td><td>Test the palindrome logic directly — no HTTP, no framework. Fast and focused on edge cases (phrases, mixed casing, punctuation, nulls).</td></tr>
+        <tr><td>Integration tests</td><td>Spin up the full API in-process using <code>WebApplicationFactory</code> and send real HTTP requests. Verify status codes, response bodies and content types.</td></tr>
+      </table>
+      <p style="margin-top:0.75rem">39 tests in total. A failing test blocks deployment.</p>
+    </div>
+
+    <div class="section">
+      <h2>CI/CD pipeline</h2>
+      <p>Every push to <code>main</code> triggers a GitHub Actions workflow:</p>
+      <div class="flow">
+        <span class="flow-step">Build</span>
+        <span class="arrow">→</span>
+        <span class="flow-step">Test</span>
+        <span class="arrow">→</span>
+        <span class="flow-step">Deploy API to Fly.io</span>
+        <span class="arrow">+</span>
+        <span class="flow-step">Deploy frontend to GitHub Pages</span>
+      </div>
+      <p style="margin-top:0.75rem">
+        The deploy steps only run on pushes to <code>main</code>, not on pull requests. Both deployments happen in parallel once the tests pass.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Security note</h2>
+      <p>
+        The login on this site is client-side only — credentials are visible in the page source. This is intentional for a demo. In a production app, authentication would be handled server-side (e.g. JWT tokens, OAuth) and credentials would never be stored in frontend code.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
