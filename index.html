@@ -126,6 +126,15 @@
     .logout-btn:hover { background: #ddd; }
 
     #login-view, #app-view { display: none; }
+
+    .feature-off {
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      background: #fff8e1;
+      color: #795548;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -159,14 +168,20 @@
       <h1>Palindrome Checker</h1>
       <p class="subtitle">Type a word or phrase to check if it reads the same forwards and backwards.</p>
 
-      <div class="input-row">
-        <input id="input" type="text" placeholder="e.g. racecar" />
-        <button id="btn" onclick="check()">Check</button>
+      <div id="checker-enabled">
+        <div class="input-row">
+          <input id="input" type="text" placeholder="e.g. racecar" />
+          <button id="btn" onclick="check()">Check</button>
+        </div>
+
+        <div class="result" id="result">
+          <div class="label" id="result-label"></div>
+          <div id="result-message"></div>
+        </div>
       </div>
 
-      <div class="result" id="result">
-        <div class="label" id="result-label"></div>
-        <div id="result-message"></div>
+      <div id="checker-disabled" class="feature-off" style="display:none;">
+        The palindrome checker is currently disabled.
       </div>
     </div>
 
@@ -175,6 +190,12 @@
   <script>
     const API = 'https://palindrome-rikard.fly.dev/palindrome';
     const USERS = { '1': '1', '2': '2', '3': '3' };
+    const FEATURES_KEY = 'features';
+
+    function isApiEnabled() {
+      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
+      return features.api !== false; // enabled by default
+    }
 
     function init() {
       const user = sessionStorage.getItem('user');
@@ -213,6 +234,10 @@
       document.getElementById('login-view').style.display = 'none';
       document.getElementById('greeting').textContent = `Signed in as user ${user}`;
       document.getElementById('app-view').style.display = 'block';
+
+      const apiOn = user !== '3' && isApiEnabled();
+      document.getElementById('checker-enabled').style.display = apiOn ? 'block' : 'none';
+      document.getElementById('checker-disabled').style.display = apiOn ? 'none' : 'block';
     }
 
     document.addEventListener('keydown', e => {
