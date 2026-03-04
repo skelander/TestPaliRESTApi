@@ -63,6 +63,19 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     }
 
     [Fact]
+    public async Task Check_DotInput_Returns200()
+    {
+        var response = await _client.GetAsync("/palindrome?input=.");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<PalindromeResponse>();
+        Assert.NotNull(body);
+        Assert.Equal(".", body.Input);
+        Assert.True(body.IsPalindrome);
+    }
+
+    [Fact]
     public async Task Check_MissingInput_Returns400()
     {
         var response = await _client.GetAsync("/palindrome");
