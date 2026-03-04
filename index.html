@@ -192,9 +192,10 @@
     const USERS = { '1': '1', '2': '2', '3': '3' };
     const FEATURES_KEY = 'features';
 
-    function isApiEnabled() {
+    function isApiEnabled(user) {
       const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
-      return features.api !== false; // enabled by default
+      const perUser = features.api || {};
+      return perUser[user] !== false; // enabled by default
     }
 
     function init() {
@@ -235,7 +236,7 @@
       document.getElementById('greeting').textContent = `Signed in as user ${user}`;
       document.getElementById('app-view').style.display = 'block';
 
-      const apiOn = user !== '3' && isApiEnabled();
+      const apiOn = isApiEnabled(user);
       document.getElementById('checker-enabled').style.display = apiOn ? 'block' : 'none';
       document.getElementById('checker-disabled').style.display = apiOn ? 'none' : 'block';
     }

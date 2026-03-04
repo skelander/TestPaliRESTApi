@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Feature Toggles</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+
+    p.subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      font-size: 0.8rem;
+      color: #999;
+      font-weight: 500;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    th:last-child { text-align: center; }
+
+    td {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.95rem;
+    }
+
+    td:last-child { text-align: center; }
+
+    input[type="checkbox"] {
+      width: 1.1rem;
+      height: 1.1rem;
+      cursor: pointer;
+      accent-color: #111;
+    }
+
+    .saved-msg {
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      color: #1e7e34;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Feature Toggles</h1>
+    <p class="subtitle">Enable or disable the palindrome API per user.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>API enabled</th>
+        </tr>
+      </thead>
+      <tbody id="toggle-rows"></tbody>
+    </table>
+
+    <div class="saved-msg" id="saved-msg">Changes saved.</div>
+  </div>
+
+  <script>
+    const FEATURES_KEY = 'features';
+    const USERS = ['1', '2', '3'];
+
+    function load() {
+      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
+      return features.api || {};
+    }
+
+    function save(perUser) {
+      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
+      features.api = perUser;
+      localStorage.setItem(FEATURES_KEY, JSON.stringify(features));
+
+      const msg = document.getElementById('saved-msg');
+      msg.style.opacity = '1';
+      setTimeout(() => msg.style.opacity = '0', 1500);
+    }
+
+    function render() {
+      const perUser = load();
+      const tbody = document.getElementById('toggle-rows');
+      tbody.innerHTML = '';
+
+      USERS.forEach(user => {
+        const enabled = perUser[user] !== false;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>User ${user}</td>
+          <td><input type="checkbox" ${enabled ? 'checked' : ''} data-user="${user}" /></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.addEventListener('change', e => {
+        if (e.target.type !== 'checkbox') return;
+        const current = load();
+        current[e.target.dataset.user] = e.target.checked;
+        save(current);
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
