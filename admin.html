@@ -30,8 +30,78 @@
     p.subtitle {
       color: #666;
       font-size: 0.9rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 0.65rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus { border-color: #555; }
+
+    button {
+      width: 100%;
+      padding: 0.65rem 1.25rem;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.25rem;
+    }
+
+    button:hover { background: #333; }
+
+    .error-msg {
+      color: #b71c1c;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .user-bar span { font-size: 0.85rem; color: #666; }
+
+    .logout-btn {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.8rem;
+      background: #eee;
+      color: #333;
+      border-radius: 6px;
+      width: auto;
+      margin-top: 0;
+    }
+
+    .logout-btn:hover { background: #ddd; }
 
     table { width: 100%; border-collapse: collapse; }
 
@@ -68,36 +138,108 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
+
+    #login-view, #admin-view { display: none; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Feature Toggles</h1>
-    <p class="subtitle">Enable or disable the palindrome API per user.</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>API enabled</th>
-        </tr>
-      </thead>
-      <tbody id="toggle-rows"></tbody>
-    </table>
+    <!-- Login -->
+    <div id="login-view">
+      <h1>Sign in</h1>
+      <p class="subtitle">Admin access required.</p>
 
-    <div class="saved-msg" id="saved-msg">Changes saved.</div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="e.g. 1" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" />
+      </div>
+
+      <button onclick="login()">Sign in</button>
+      <div class="error-msg" id="login-error">Incorrect username or password.</div>
+    </div>
+
+    <!-- Admin -->
+    <div id="admin-view">
+      <div class="user-bar">
+        <span id="greeting"></span>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
+
+      <h1>Feature Toggles</h1>
+      <p class="subtitle">Enable or disable the palindrome API per user.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>API enabled</th>
+          </tr>
+        </thead>
+        <tbody id="toggle-rows"></tbody>
+      </table>
+
+      <div class="saved-msg" id="saved-msg">Changes saved.</div>
+    </div>
+
   </div>
 
   <script>
+    const USERS = { '1': '1', '2': '2', '3': '3' };
     const FEATURES_KEY = 'features';
-    const USERS = ['1', '2', '3'];
 
-    function load() {
+    function init() {
+      const user = sessionStorage.getItem('user');
+      if (user) {
+        showAdmin(user);
+      } else {
+        document.getElementById('login-view').style.display = 'block';
+      }
+    }
+
+    function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+      const errEl = document.getElementById('login-error');
+
+      if (USERS[user] && USERS[user] === pass) {
+        sessionStorage.setItem('user', user);
+        errEl.style.display = 'none';
+        showAdmin(user);
+      } else {
+        errEl.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('user');
+      document.getElementById('admin-view').style.display = 'none';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('login-view').style.display = 'block';
+    }
+
+    function showAdmin(user) {
+      document.getElementById('login-view').style.display = 'none';
+      document.getElementById('greeting').textContent = `Signed in as user ${user}`;
+      document.getElementById('admin-view').style.display = 'block';
+      renderToggles();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.getElementById('login-view').style.display !== 'none') login();
+    });
+
+    function loadFeatures() {
       const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
       return features.api || {};
     }
 
-    function save(perUser) {
+    function saveFeatures(perUser) {
       const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
       features.api = perUser;
       localStorage.setItem(FEATURES_KEY, JSON.stringify(features));
@@ -107,12 +249,12 @@
       setTimeout(() => msg.style.opacity = '0', 1500);
     }
 
-    function render() {
-      const perUser = load();
+    function renderToggles() {
+      const perUser = loadFeatures();
       const tbody = document.getElementById('toggle-rows');
       tbody.innerHTML = '';
 
-      USERS.forEach(user => {
+      Object.keys(USERS).forEach(user => {
         const enabled = perUser[user] !== false;
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -124,13 +266,13 @@
 
       tbody.addEventListener('change', e => {
         if (e.target.type !== 'checkbox') return;
-        const current = load();
+        const current = loadFeatures();
         current[e.target.dataset.user] = e.target.checked;
-        save(current);
+        saveFeatures(current);
       });
     }
 
-    render();
+    init();
   </script>
 </body>
 </html>
