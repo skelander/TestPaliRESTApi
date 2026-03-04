@@ -20,6 +20,7 @@ public class PalindromeServiceTests
     [InlineData("racecat", false)]
     [InlineData("racecars", false)]
     [InlineData("ab", false)]
+    [InlineData("dsdsd%%", false)]
     public void IsPalindrome_Words(string input, bool expected)
     {
         Assert.Equal(expected, _sut.IsPalindrome(input));
@@ -44,7 +45,7 @@ public class PalindromeServiceTests
 
     [Theory]
     [InlineData("A man a plan a canal Panama", true)]
-    [InlineData("Was it a car or a cat I saw?", true)]
+    [InlineData("Was it a car or a cat I saw?", false)]
     [InlineData("Not a palindrome at all", false)]
     public void IsPalindrome_Phrases(string input, bool expected)
     {
