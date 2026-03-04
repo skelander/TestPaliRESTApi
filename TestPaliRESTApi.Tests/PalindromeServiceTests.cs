@@ -10,6 +10,8 @@ public class PalindromeServiceTests
     [Theory]
     [InlineData("racecar", true)]
     [InlineData("RaceCar", true)]
+    [InlineData("level", true)]
+    [InlineData("deified", true)]
     [InlineData("hello", false)]
     [InlineData("palindrome", false)]
     [InlineData("openai", false)]
