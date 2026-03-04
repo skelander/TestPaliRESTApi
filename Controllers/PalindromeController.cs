@@ -8,8 +8,8 @@ namespace TestPaliRESTApi.Controllers;
 [Route("[controller]")]
 public class PalindromeController(IPalindromeService service) : ControllerBase
 {
-    [HttpGet("{input}")]
-    public IActionResult Check(string input)
+    [HttpGet]
+    public IActionResult Check([FromQuery] string input)
     {
         bool isPalindrome = service.IsPalindrome(input);
 

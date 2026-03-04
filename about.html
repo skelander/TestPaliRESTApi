@@ -180,7 +180,7 @@
       </p>
       <table>
         <tr><td><code>POST /auth/login</code></td><td>Validates credentials server-side. Returns the username and role (<code>user</code> or <code>admin</code>), or 401 if invalid.</td></tr>
-        <tr><td><code>GET /palindrome/{input}</code></td><td>Checks if the input is a palindrome and returns a JSON result with <code>input</code>, <code>isPalindrome</code>, and <code>message</code>.</td></tr>
+        <tr><td><code>GET /palindrome?input=…</code></td><td>Checks if the input is a palindrome and returns a JSON result with <code>input</code>, <code>isPalindrome</code>, and <code>message</code>.</td></tr>
         <tr><td><code>GET /features</code></td><td>Returns the current API access flag for each user.</td></tr>
         <tr><td><code>PUT /features/{user}</code></td><td>Enables or disables API access for a specific user.</td></tr>
       </table>

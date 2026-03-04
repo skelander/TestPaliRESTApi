@@ -19,7 +19,7 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     [InlineData("hello", false)]
     public async Task Check_ReturnsCorrectResult(string input, bool expectedIsPalindrome)
     {
-        var response = await _client.GetAsync($"/palindrome/{input}");
+        var response = await _client.GetAsync($"/palindrome?input={input}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -32,7 +32,7 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task Check_PhraseWithSpaces_ReturnsPalindrome()
     {
-        var response = await _client.GetAsync("/palindrome/A%20man%20a%20plan%20a%20canal%20Panama");
+        var response = await _client.GetAsync("/palindrome?input=A%20man%20a%20plan%20a%20canal%20Panama");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -45,7 +45,7 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task Check_ReturnsJsonContentType()
     {
-        var response = await _client.GetAsync("/palindrome/racecar");
+        var response = await _client.GetAsync("/palindrome?input=racecar");
 
         Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
     }
@@ -55,7 +55,7 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     [InlineData("hello", "\"hello\" is not a palindrome.")]
     public async Task Check_ReturnsCorrectMessage(string input, string expectedMessage)
     {
-        var response = await _client.GetAsync($"/palindrome/{input}");
+        var response = await _client.GetAsync($"/palindrome?input={input}");
 
         var body = await response.Content.ReadFromJsonAsync<PalindromeResponse>();
         Assert.NotNull(body);
@@ -63,17 +63,17 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     }
 
     [Fact]
-    public async Task Check_MissingInput_Returns404()
+    public async Task Check_MissingInput_Returns400()
     {
         var response = await _client.GetAsync("/palindrome");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
     public async Task Check_PostMethod_Returns405()
     {
-        var response = await _client.PostAsync("/palindrome/racecar", null);
+        var response = await _client.PostAsync("/palindrome?input=racecar", null);
 
         Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
@@ -81,7 +81,7 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task Check_PreservesOriginalCasingInResponse()
     {
-        var response = await _client.GetAsync("/palindrome/RaceCar");
+        var response = await _client.GetAsync("/palindrome?input=RaceCar");
 
         var body = await response.Content.ReadFromJsonAsync<PalindromeResponse>();
         Assert.NotNull(body);
