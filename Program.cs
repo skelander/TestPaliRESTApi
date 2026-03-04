@@ -7,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IPalindromeService, PalindromeService>();
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("GitHubPages", policy =>
+        policy.WithOrigins("https://skelander.github.io")
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -20,6 +27,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("GitHubPages");
 
 app.UseAuthorization();
 
