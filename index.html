@@ -9,7 +9,7 @@
 
     body {
       font-family: system-ui, sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,92 +17,134 @@
     }
 
     .card {
-      background: white;
-      border-radius: 12px;
+      background: #fff;
+      border-radius: 20px;
       padding: 2.5rem;
       width: 100%;
-      max-width: 480px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-
-    p.subtitle {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .input-row { display: flex; gap: 0.5rem; }
-
-    input {
-      flex: 1;
-      padding: 0.65rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus { border-color: #555; }
-
-    button {
-      padding: 0.65rem 1.25rem;
-      background: #111;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    button:hover { background: #333; }
-    button:disabled { background: #999; cursor: default; }
-
-    .result {
-      margin-top: 1.25rem;
-      padding: 1rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      display: none;
-    }
-
-    .result.yes { background: #e6f4ea; color: #1e7e34; }
-    .result.no  { background: #fdecea; color: #b71c1c; }
-
-    .result .label {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
+      max-width: 500px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
     }
 
     .user-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #f3f4f6;
     }
 
-    .user-bar span { font-size: 0.85rem; color: #666; }
+    .logo { font-size: 1.1rem; font-weight: 800; color: #4f46e5; letter-spacing: -0.5px; }
+
+    .user-info { display: flex; align-items: center; gap: 0.75rem; }
+
+    .user-info span { font-size: 0.8rem; color: #6b7280; }
 
     .logout-btn {
-      padding: 0.3rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       font-size: 0.8rem;
-      background: #eee;
-      color: #333;
-      border-radius: 6px;
+      font-weight: 500;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .logout-btn:hover { background: #ddd; }
+    .logout-btn:hover { background: #e5e7eb; }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.35rem;
+    }
+
+    p.subtitle {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    .input-row { display: flex; gap: 0.6rem; }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      color: #111;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+
+    button#btn {
+      padding: 0.75rem 1.4rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    button#btn:hover { background: #4338ca; }
+    button#btn:active { transform: scale(0.97); }
+    button#btn:disabled { background: #a5b4fc; cursor: default; transform: none; }
+
+    .result {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      display: none;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result.yes {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+
+    .result.no {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #7f1d1d;
+      border: 1px solid #fca5a5;
+    }
+
+    .result .label {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .result .message { opacity: 0.85; }
 
     .feature-off {
-      margin-top: 1rem;
-      padding: 1rem 1.25rem;
-      background: #fff8e1;
-      color: #795548;
-      border-radius: 8px;
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      background: #fef9c3;
+      color: #713f12;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
       font-size: 0.9rem;
     }
   </style>
@@ -110,11 +152,14 @@
 <body>
   <div class="card">
     <div class="user-bar">
-      <span id="greeting"></span>
-      <button class="logout-btn" onclick="logout()">Sign out</button>
+      <div class="logo">Palindrome</div>
+      <div class="user-info">
+        <span id="greeting"></span>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
     </div>
 
-    <h1>Palindrome Checker</h1>
+    <h1>Is it a palindrome?</h1>
     <p class="subtitle">Type a word or phrase to check if it reads the same forwards and backwards.</p>
 
     <div id="checker-enabled">
@@ -125,12 +170,12 @@
 
       <div class="result" id="result">
         <div class="label" id="result-label"></div>
-        <div id="result-message"></div>
+        <div class="message" id="result-message"></div>
       </div>
     </div>
 
     <div id="checker-disabled" class="feature-off" style="display:none;">
-      The palindrome checker is currently disabled.
+      The palindrome checker is currently disabled for your account.
     </div>
   </div>
 
@@ -145,7 +190,7 @@
         window.location.href = 'login.html';
         return;
       }
-      document.getElementById('greeting').textContent = `Signed in as user ${user}`;
+      document.getElementById('greeting').textContent = `User ${user}`;
       const apiOn = isApiEnabled(user);
       document.getElementById('checker-enabled').style.display = apiOn ? 'block' : 'none';
       document.getElementById('checker-disabled').style.display = apiOn ? 'none' : 'block';
@@ -186,14 +231,18 @@
 
     function showResult(data) {
       const el = document.getElementById('result');
+      el.style.display = 'none'; // reset animation
+      void el.offsetWidth;
       el.className = 'result ' + (data.isPalindrome ? 'yes' : 'no');
       el.style.display = 'block';
-      document.getElementById('result-label').textContent = data.isPalindrome ? 'Yes!' : 'No';
+      document.getElementById('result-label').textContent = data.isPalindrome ? 'Yes, it is!' : 'No, it isn\'t.';
       document.getElementById('result-message').textContent = data.message;
     }
 
     function showError() {
       const el = document.getElementById('result');
+      el.style.display = 'none';
+      void el.offsetWidth;
       el.className = 'result no';
       el.style.display = 'block';
       document.getElementById('result-label').textContent = 'Error';

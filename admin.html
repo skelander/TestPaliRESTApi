@@ -9,7 +9,7 @@
 
     body {
       font-family: system-ui, sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,85 +17,129 @@
     }
 
     .card {
-      background: white;
-      border-radius: 12px;
+      background: #fff;
+      border-radius: 20px;
       padding: 2.5rem;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-
-    p.subtitle {
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 1.75rem;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
     }
 
     .user-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #f3f4f6;
     }
 
-    .user-bar span { font-size: 0.85rem; color: #666; }
+    .logo { font-size: 1.1rem; font-weight: 800; color: #4f46e5; letter-spacing: -0.5px; }
+
+    .user-info { display: flex; align-items: center; gap: 0.75rem; }
+    .user-info span { font-size: 0.8rem; color: #6b7280; }
 
     .logout-btn {
-      padding: 0.3rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       font-size: 0.8rem;
-      background: #eee;
-      color: #333;
+      font-weight: 500;
+      background: #f3f4f6;
+      color: #374151;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .logout-btn:hover { background: #ddd; }
+    .logout-btn:hover { background: #e5e7eb; }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.3rem;
+    }
+
+    p.subtitle {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-bottom: 1.75rem;
+    }
 
     table { width: 100%; border-collapse: collapse; }
 
     th {
       text-align: left;
-      font-size: 0.8rem;
-      color: #999;
-      font-weight: 500;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #eee;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f3f4f6;
     }
 
-    th:last-child { text-align: center; }
+    th:last-child { text-align: right; }
 
     td {
-      padding: 0.85rem 0;
-      border-bottom: 1px solid #f0f0f0;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f9fafb;
       font-size: 0.95rem;
+      color: #111;
+      font-weight: 500;
     }
 
-    td:last-child { text-align: center; }
+    td:last-child { text-align: right; }
 
-    input[type="checkbox"] {
-      width: 1.1rem;
-      height: 1.1rem;
+    /* Toggle switch */
+    .toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #e5e7eb;
+      border-radius: 999px;
       cursor: pointer;
-      accent-color: #111;
+      transition: background 0.2s;
     }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .slider { background: #4f46e5; }
+    .toggle input:checked + .slider::before { transform: translateX(20px); }
 
     .saved-msg {
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
       font-size: 0.85rem;
-      color: #1e7e34;
+      color: #059669;
+      font-weight: 500;
       opacity: 0;
       transition: opacity 0.3s;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="user-bar">
-      <span>Signed in as admin</span>
-      <button class="logout-btn" onclick="logout()">Sign out</button>
+      <div class="logo">Palindrome</div>
+      <div class="user-info">
+        <span>Admin</span>
+        <button class="logout-btn" onclick="logout()">Sign out</button>
+      </div>
     </div>
 
     <h1>Feature Toggles</h1>
@@ -105,7 +149,7 @@
       <thead>
         <tr>
           <th>User</th>
-          <th>API enabled</th>
+          <th>API access</th>
         </tr>
       </thead>
       <tbody id="toggle-rows"></tbody>
@@ -156,7 +200,12 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>User ${user}</td>
-          <td><input type="checkbox" ${enabled ? 'checked' : ''} data-user="${user}" /></td>
+          <td>
+            <label class="toggle">
+              <input type="checkbox" ${enabled ? 'checked' : ''} data-user="${user}" />
+              <span class="slider"></span>
+            </label>
+          </td>
         `;
         tbody.appendChild(tr);
       });
