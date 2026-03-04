@@ -100,6 +100,37 @@
       display: none;
       text-align: center;
     }
+
+    .hint-box {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: #f5f3ff;
+      border: 1px solid #e0e7ff;
+      border-radius: 12px;
+    }
+
+    .hint-box p {
+      font-size: 0.8rem;
+      color: #4338ca;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .hint-box table {
+      width: 100%;
+      font-size: 0.8rem;
+      border-collapse: collapse;
+      color: #374151;
+    }
+
+    .hint-box td {
+      padding: 0.2rem 0.5rem 0.2rem 0;
+    }
+
+    .hint-box td:first-child {
+      color: #6b7280;
+      width: 6rem;
+    }
   </style>
 </head>
 <body>
@@ -119,6 +150,14 @@
 
     <button onclick="login()">Sign in</button>
     <div class="error-msg" id="login-error">Incorrect username or password.</div>
+
+    <div class="hint-box">
+      <p>Test accounts</p>
+      <table>
+        <tr><td>Regular users</td><td><strong>1</strong>, <strong>2</strong>, or <strong>3</strong> — password same as username</td></tr>
+        <tr><td>Admin</td><td><strong>admin</strong> — password <strong>admin</strong></td></tr>
+      </table>
+    </div>
   </div>
 
   <script>
