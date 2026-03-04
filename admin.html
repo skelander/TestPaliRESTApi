@@ -159,8 +159,8 @@
   </div>
 
   <script>
+    const API = 'https://palindrome-rikard.fly.dev/features';
     const MANAGED_USERS = ['1', '2', '3'];
-    const FEATURES_KEY = 'features';
 
     function init() {
       if (sessionStorage.getItem('user') !== 'admin') {
@@ -175,28 +175,22 @@
       window.location.href = 'login.html';
     }
 
-    function loadFeatures() {
-      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
-      return features.api || {};
-    }
-
-    function saveFeatures(perUser) {
-      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
-      features.api = perUser;
-      localStorage.setItem(FEATURES_KEY, JSON.stringify(features));
-
-      const msg = document.getElementById('saved-msg');
-      msg.style.opacity = '1';
-      setTimeout(() => msg.style.opacity = '0', 1500);
-    }
-
-    function renderToggles() {
-      const perUser = loadFeatures();
+    async function renderToggles() {
       const tbody = document.getElementById('toggle-rows');
-      tbody.innerHTML = '';
+      tbody.innerHTML = '<tr><td colspan="2" style="color:#9ca3af;font-size:0.85rem;padding:1rem 0">Loading...</td></tr>';
 
+      let flags = {};
+      try {
+        const res = await fetch(API);
+        flags = await res.json();
+      } catch {
+        tbody.innerHTML = '<tr><td colspan="2" style="color:#dc2626;font-size:0.85rem;padding:1rem 0">Could not load features.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
       MANAGED_USERS.forEach(user => {
-        const enabled = perUser[user] !== false;
+        const enabled = flags[user] !== false;
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>User ${user}</td>
@@ -210,11 +204,16 @@
         tbody.appendChild(tr);
       });
 
-      tbody.addEventListener('change', e => {
+      tbody.addEventListener('change', async e => {
         if (e.target.type !== 'checkbox') return;
-        const current = loadFeatures();
-        current[e.target.dataset.user] = e.target.checked;
-        saveFeatures(current);
+        await fetch(`${API}/${e.target.dataset.user}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: e.target.checked }),
+        });
+        const msg = document.getElementById('saved-msg');
+        msg.style.opacity = '1';
+        setTimeout(() => msg.style.opacity = '0', 1500);
       });
     }
 

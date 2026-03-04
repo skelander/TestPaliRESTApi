@@ -181,25 +181,26 @@
 
   <script>
     const API = 'https://palindrome-rikard.fly.dev/palindrome';
-    const FEATURES_KEY = 'features';
+    const FEATURES_API = 'https://palindrome-rikard.fly.dev/features';
     const VALID_USERS = ['1', '2', '3'];
 
-    function init() {
+    async function init() {
       const user = sessionStorage.getItem('user');
       if (!user || !VALID_USERS.includes(user)) {
         window.location.href = 'login.html';
         return;
       }
       document.getElementById('greeting').textContent = `User ${user}`;
-      const apiOn = isApiEnabled(user);
+
+      let apiOn = true;
+      try {
+        const res = await fetch(FEATURES_API);
+        const flags = await res.json();
+        apiOn = flags[user] !== false;
+      } catch { /* default to enabled if API unreachable */ }
+
       document.getElementById('checker-enabled').style.display = apiOn ? 'block' : 'none';
       document.getElementById('checker-disabled').style.display = apiOn ? 'none' : 'block';
-    }
-
-    function isApiEnabled(user) {
-      const features = JSON.parse(localStorage.getItem(FEATURES_KEY) || '{}');
-      const perUser = features.api || {};
-      return perUser[user] !== false;
     }
 
     function logout() {

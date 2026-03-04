@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddSingleton<IPalindromeService, PalindromeService>();
+builder.Services.AddSingleton<IFeaturesService, FeaturesService>();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
