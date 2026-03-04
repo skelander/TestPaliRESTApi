@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IPalindromeService, PalindromeService>();
 builder.Services.AddSingleton<IFeaturesService, FeaturesService>();
+builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {

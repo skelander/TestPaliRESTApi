@@ -179,6 +179,7 @@
         The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes two controllers:
       </p>
       <table>
+        <tr><td><code>POST /auth/login</code></td><td>Validates credentials server-side. Returns the username and role (<code>user</code> or <code>admin</code>), or 401 if invalid.</td></tr>
         <tr><td><code>GET /palindrome/{input}</code></td><td>Checks if the input is a palindrome and returns a JSON result with <code>input</code>, <code>isPalindrome</code>, and <code>message</code>.</td></tr>
         <tr><td><code>GET /features</code></td><td>Returns the current API access flag for each user.</td></tr>
         <tr><td><code>PUT /features/{user}</code></td><td>Enables or disables API access for a specific user.</td></tr>
@@ -230,7 +231,10 @@
     <div class="section">
       <h2>Security note</h2>
       <p>
-        The login on this site is client-side only — credentials are visible in the page source. This is intentional for a demo. In a production app, authentication would be handled server-side (e.g. JWT tokens, OAuth) and credentials would never be stored in frontend code.
+        Login is validated server-side via <code>POST /auth/login</code> — credentials are no longer stored in the frontend code. The API checks the username and password and returns the user's role; the frontend never sees the credential store.
+      </p>
+      <p>
+        The browser session is maintained with <code>sessionStorage</code>, which clears when the tab is closed. In a production app this would typically use short-lived JWT tokens or server-side sessions with HTTPS-only cookies.
       </p>
     </div>
   </div>

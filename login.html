@@ -163,19 +163,32 @@
   </div>
 
   <script>
-    const USERS = { '1': '1', '2': '2', '3': '3', 'admin': 'admin' };
+    const AUTH_API = 'https://palindrome-rikard.fly.dev/auth/login';
 
     document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 
-    function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value;
+    async function login() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errEl = document.getElementById('login-error');
 
-      if (USERS[user] && USERS[user] === pass) {
-        sessionStorage.setItem('user', user);
-        window.location.href = user === 'admin' ? 'admin.html' : 'index.html';
-      } else {
-        document.getElementById('login-error').style.display = 'block';
+      try {
+        const res = await fetch(AUTH_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('user', data.user);
+          window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+        } else {
+          errEl.style.display = 'block';
+        }
+      } catch {
+        errEl.textContent = 'Could not reach the server. Try again.';
+        errEl.style.display = 'block';
       }
     }
   </script>
