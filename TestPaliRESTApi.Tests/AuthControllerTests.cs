@@ -29,6 +29,7 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(body);
         Assert.Equal(username, body.User);
         Assert.Equal(expectedRole, body.Role);
+        Assert.False(string.IsNullOrEmpty(body.Token));
     }
 
     [Theory]
@@ -42,5 +43,5 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    private record LoginResponse(string User, string Role);
+    private record LoginResponse(string User, string Role, string Token);
 }
