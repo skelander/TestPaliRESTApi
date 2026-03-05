@@ -9,11 +9,11 @@ A palindrome checker built with ASP.NET Core. A REST API handles logic and auth;
 ## API Endpoints
 
 ### `POST /auth/login`
-Validates credentials. Returns the user's username and role, or 401.
+Validates credentials. Returns the username, role, and a signed JWT token (8-hour expiry), or 401.
 
 ```json
 { "username": "1", "password": "1" }
-→ { "user": "1", "role": "user" }
+→ { "user": "1", "role": "user", "token": "<jwt>" }
 ```
 
 ### `GET /palindrome?input=…`
@@ -36,11 +36,14 @@ GET /palindrome?input=racecar
 Returns the current API access flag per user.
 
 ### `PUT /features/{user}`
-Enables or disables API access for a specific user (admin only via the frontend).
+Enables or disables API access for a specific user. Requires admin JWT (`Authorization: Bearer <token>`).
 
 ```json
 { "enabled": false }
 ```
+
+### `GET /logs`
+Returns recent application log entries (up to 200). Requires admin JWT.
 
 ---
 
@@ -68,20 +71,22 @@ Enables or disables API access for a specific user (admin only via the frontend)
 
 ```
 frontend/                        static HTML/CSS/JS (deployed to GitHub Pages)
-  login.html, index.html, admin.html, about.html
+  login.html, index.html, admin.html, about.html, how-we-did-it.html
 
 TestPaliRESTApi/
-  Controllers/   PalindromeController, AuthController, FeaturesController
-  Services/      IPalindromeService, IAuthService, IFeaturesService + implementations
-  Models/        PalindromeResult, User
+  Controllers/   PalindromeController, AuthController, FeaturesController, LogsController
+  Services/      IPalindromeService, IAuthService, IFeaturesService + implementations, LogStore
+  Logging/       InMemoryLoggerProvider (captures app logs to LogStore)
+  Models/        PalindromeResult, User, LogEntry
   Data/          AppDbContext
-  Program.cs     DI registration, user seeding
+  Program.cs     DI registration, JWT auth, user seeding
 
 TestPaliRESTApi.Tests/
   PalindromeServiceTests.cs     unit tests for palindrome logic
   PalindromeControllerTests.cs  HTTP integration tests
-  AuthControllerTests.cs        login endpoint tests
-  FeaturesControllerTests.cs    feature flag endpoint tests
+  AuthControllerTests.cs        login and JWT token tests
+  FeaturesControllerTests.cs    feature flag endpoint tests (incl. auth)
+  LogsControllerTests.cs        logs endpoint auth tests
 ```
 
 ---

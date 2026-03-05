@@ -31,7 +31,7 @@ All test methods use `Assert.Equal(expected, _sut.IsPalindrome(input))` with the
 | `""` | `true` | Empty string is trivially a palindrome |
 | `null` | `true` | Treated as empty string |
 | `"   "` | `true` | Strips to empty string — same as above |
-| `"!!!"` | `true` | All non-alphanumeric chars are stripped, leaving empty string |
+| `"!!!"` | `true` | Only whitespace is stripped, so `!!!` stays as-is — and `!!!` reversed is still `!!!` |
 
 These cases are arguably surprising — a string of spaces returning `true` is not obvious. Documenting them in tests makes the behaviour explicit and prevents future changes from accidentally altering it.
 
@@ -43,6 +43,6 @@ These cases are arguably surprising — a string of spaces returning `true` is n
 | `Check_PhraseWithSpaces_ReturnsPalindrome` | URL decoding — `%20` becomes a space in `input` field |
 | `Check_ReturnsJsonContentType` | `Content-Type: application/json` |
 | `Check_ReturnsCorrectMessage` | Exact message string for both true and false cases |
-| `Check_MissingInput_Returns404` | Route requires `{input}` segment |
+| `Check_MissingInput_Returns400` | Query parameter `input` is required; omitting it returns 400 |
 | `Check_PostMethod_Returns405` | Only GET is supported |
 | `Check_PreservesOriginalCasingInResponse` | `input` field reflects original casing, not lowercased |

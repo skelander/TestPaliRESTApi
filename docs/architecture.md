@@ -2,50 +2,43 @@
 
 ## Overview
 
-The API follows a clean architecture approach with three distinct layers: HTTP, domain logic, and models. Each layer has a single responsibility and depends only on abstractions.
+The API follows a layered pattern. Controllers handle HTTP concerns only; services hold business logic; models define data shapes. Controllers depend on interfaces, never concrete types.
 
-```
-HTTP Request
-     │
-     ▼
-PalindromeController          (Controllers/)
-     │  depends on interface
-     ▼
-IPalindromeService            (Services/)
-     │  implemented by
-     ▼
-PalindromeService             (Services/)
-     │  returns bool to controller
-     ▼
-PalindromeResult              (Models/)
-     │  serialized to JSON
-     ▼
-HTTP Response
-```
+## Controllers
 
-## Layers
+| Controller | Endpoints | Auth required |
+|------------|-----------|---------------|
+| `AuthController` | `POST /auth/login` | None |
+| `PalindromeController` | `GET /palindrome?input=…` | None |
+| `FeaturesController` | `GET /features` / `PUT /features/{user}` | PUT requires admin JWT |
+| `LogsController` | `GET /logs` | Admin JWT |
 
-### Controllers
-Responsible only for HTTP concerns: routing, reading the request, and returning the response. Contains no business logic. Depends on `IPalindromeService`, never on `PalindromeService` directly.
+## Authentication
 
-### Services
-Contains the palindrome logic. `IPalindromeService` defines the contract; `PalindromeService` implements it. This separation means the controller can be tested with a mock or stub service, and the service can be tested without an HTTP layer.
+`POST /auth/login` validates credentials against the EF Core in-memory database and returns a signed JWT (HMAC-SHA256, 8-hour expiry). The JWT signing key is injected at runtime from an environment variable (Fly.io secret in production; `appsettings.json` fallback for development).
 
-### Models
-`PalindromeResult` is a typed record representing the API response. Using a named type instead of an anonymous object makes the response shape explicit and reusable.
+Protected endpoints use `[Authorize(Roles = "admin")]`. ASP.NET Core's JWT bearer middleware validates the token on every request.
+
+## Services
+
+| Service | Lifetime | Notes |
+|---------|----------|-------|
+| `PalindromeService` | Singleton | Stateless — safe for shared use |
+| `FeaturesService` | Singleton | In-memory `ConcurrentDictionary`; resets on restart |
+| `AuthService` | Scoped | Uses `AppDbContext` |
+| `LogStore` | Singleton | `ConcurrentQueue`, capped at 200 entries |
+
+## Logging
+
+A custom `InMemoryLoggerProvider` captures log entries from `TestPaliRESTApi.*` categories (Information and above) into `LogStore`. The `GET /logs` endpoint serves these entries to the admin frontend, which polls every 5 seconds.
 
 ## Key Decisions
 
 ### Interface over concrete type
-The controller injects `IPalindromeService`, not `PalindromeService`. This decouples the HTTP layer from the implementation, making it straightforward to:
-- Swap the implementation (e.g. a cached or async version)
-- Mock the service in tests without spinning up the real logic
+Controllers inject interfaces (`IPalindromeService`, `IFeaturesService`, etc.), not concrete classes. This decouples the HTTP layer from implementations and makes testing with mocks straightforward.
 
-### Singleton lifetime
-`PalindromeService` is registered as a singleton because it holds no state — the same instance can safely serve all requests.
-
-### Null handling in the service
-The service accepts `string?` and treats null as an empty string via `?? string.Empty`. An empty string cleans to `""`, which is considered a palindrome. This keeps the controller simple — it passes whatever it receives without null-checking.
+### Query parameter instead of path segment
+The palindrome endpoint uses `GET /palindrome?input=…` rather than `GET /palindrome/{input}`. A dot (`.`) in a URL path segment causes ASP.NET Core routing to fail; a query parameter avoids this entirely.
 
 ### `public partial class Program`
-`Program.cs` ends with `public partial class Program { }`. This exposes the application entry point to `WebApplicationFactory<Program>` in the test project, enabling full integration tests without any test-specific configuration.
+`Program.cs` ends with `public partial class Program { }`, which exposes the entry point to `WebApplicationFactory<Program>` in the test project — enabling full integration tests without test-specific configuration.
