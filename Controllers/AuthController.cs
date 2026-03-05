@@ -31,6 +31,7 @@ public class AuthController(IAuthService auth, IConfiguration config, ILogger<Au
         };
         var token = new JwtSecurityToken(
             issuer: config["Jwt:Issuer"],
+            audience: config["Jwt:Audience"],
             claims: claims,
             expires: DateTime.UtcNow.AddHours(8),
             signingCredentials: creds);
