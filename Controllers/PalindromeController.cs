@@ -6,12 +6,13 @@ namespace TestPaliRESTApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PalindromeController(IPalindromeService service) : ControllerBase
+public class PalindromeController(IPalindromeService service, ILogger<PalindromeController> logger) : ControllerBase
 {
     [HttpGet]
     public IActionResult Check([FromQuery] string input)
     {
         bool isPalindrome = service.IsPalindrome(input);
+        logger.LogInformation("Palindrome check: input={Input} result={IsPalindrome}", input, isPalindrome);
 
         return Ok(new PalindromeResult(
             Input: input,

@@ -5,7 +5,7 @@ namespace TestPaliRESTApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class FeaturesController(IFeaturesService features) : ControllerBase
+public class FeaturesController(IFeaturesService features, ILogger<FeaturesController> logger) : ControllerBase
 {
     [HttpGet]
     public IActionResult GetAll() => Ok(features.GetAll());
@@ -14,6 +14,7 @@ public class FeaturesController(IFeaturesService features) : ControllerBase
     public IActionResult SetUser(string user, [FromBody] SetFeatureRequest request)
     {
         features.SetEnabled(user, request.Enabled);
+        logger.LogInformation("Feature flag updated: user={User} enabled={Enabled}", user, request.Enabled);
         return Ok();
     }
 }
