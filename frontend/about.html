@@ -155,7 +155,7 @@
     <div class="section">
       <h2>What it does</h2>
       <p>
-        A REST API that checks whether a word or phrase is a palindrome — meaning it reads the same forwards and backwards (ignoring spaces, punctuation and casing). A simple web frontend lets users sign in and use the API, while an admin page controls access per user.
+        A REST API that checks whether a word or phrase is a palindrome — meaning it reads the same forwards and backwards (ignoring spaces and casing). A simple web frontend lets users sign in and use the API, while an admin page controls access per user.
       </p>
     </div>
 
@@ -176,7 +176,7 @@
     <div class="section">
       <h2>Architecture</h2>
       <p>
-        The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes two controllers:
+        The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes three controllers:
       </p>
       <table>
         <tr><td><code>POST /auth/login</code></td><td>Validates credentials server-side. Returns the username and role (<code>user</code> or <code>admin</code>), or 401 if invalid.</td></tr>
@@ -208,23 +208,28 @@
         <tr><td>Unit tests</td><td>Test the palindrome logic directly — no HTTP, no framework. Fast and focused on edge cases (phrases, mixed casing, punctuation, nulls).</td></tr>
         <tr><td>Integration tests</td><td>Spin up the full API in-process using <code>WebApplicationFactory</code> and send real HTTP requests. Verify status codes, response bodies and content types.</td></tr>
       </table>
-      <p style="margin-top:0.75rem">39 tests in total. A failing test blocks deployment.</p>
+      <p style="margin-top:0.75rem">48 tests in total. A failing test blocks deployment.</p>
     </div>
 
     <div class="section">
       <h2>CI/CD pipeline</h2>
-      <p>Every push to <code>main</code> triggers a GitHub Actions workflow:</p>
+      <p>Two independent workflows trigger on push to <code>main</code>, each watching different files:</p>
       <div class="flow">
-        <span class="flow-step">Build</span>
+        <span class="flow-step">API changes</span>
         <span class="arrow">→</span>
-        <span class="flow-step">Test</span>
+        <span class="flow-step">Build &amp; Test</span>
         <span class="arrow">→</span>
-        <span class="flow-step">Deploy API to Fly.io</span>
-        <span class="arrow">+</span>
-        <span class="flow-step">Deploy frontend to GitHub Pages</span>
+        <span class="flow-step">Deploy to Fly.io</span>
+      </div>
+      <div class="flow" style="margin-top:0.5rem">
+        <span class="flow-step">Frontend changes</span>
+        <span class="arrow">→</span>
+        <span class="flow-step">Inject API URL</span>
+        <span class="arrow">→</span>
+        <span class="flow-step">Deploy to GitHub Pages</span>
       </div>
       <p style="margin-top:0.75rem">
-        The deploy steps only run on pushes to <code>main</code>, not on pull requests. Both deployments happen in parallel once the tests pass.
+        The pipelines are decoupled — a CSS change only redeploys the frontend, and a code change only runs tests and redeploys the API. The API URL is stored as a repository variable and injected at deploy time, so the frontend contains no hardcoded URLs.
       </p>
     </div>
 
