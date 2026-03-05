@@ -1,10 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using TestPaliRESTApi.Data;
+using TestPaliRESTApi.Logging;
 using TestPaliRESTApi.Models;
 using TestPaliRESTApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logStore = new LogStore();
+builder.Services.AddSingleton(logStore);
+builder.Logging.AddProvider(new InMemoryLoggerProvider(logStore));
 
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("PalindromeDb"));
 builder.Services.AddSingleton<IPalindromeService, PalindromeService>();
