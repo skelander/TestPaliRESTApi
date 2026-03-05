@@ -102,5 +102,14 @@ public class PalindromeControllerTests : IClassFixture<WebApplicationFactory<Pro
         Assert.True(body.IsPalindrome);
     }
 
+    [Fact]
+    public async Task Check_InputExceedsLengthLimit_Returns400()
+    {
+        var longInput = new string('a', 1001);
+        var response = await _client.GetAsync($"/palindrome?input={longInput}");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
     private record PalindromeResponse(string Input, bool IsPalindrome, string Message);
 }
