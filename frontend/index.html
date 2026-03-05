@@ -191,7 +191,9 @@
 
       let apiOn = true;
       try {
-        const res = await fetch(FEATURES_API);
+        const res = await fetch(FEATURES_API, {
+          headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+        });
         const flags = await res.json();
         apiOn = flags[user] !== false;
       } catch { /* default to enabled if API unreachable */ }

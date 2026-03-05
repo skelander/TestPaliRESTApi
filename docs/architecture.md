@@ -10,7 +10,7 @@ The API follows a layered pattern. Controllers handle HTTP concerns only; servic
 |------------|-----------|---------------|
 | `AuthController` | `POST /auth/login` | None |
 | `PalindromeController` | `GET /palindrome?input=…` | None |
-| `FeaturesController` | `GET /features` / `PUT /features/{user}` | PUT requires admin JWT |
+| `FeaturesController` | `GET /features` / `PUT /features/{user}` | GET: any JWT; PUT: admin JWT |
 | `LogsController` | `GET /logs` | Admin JWT |
 
 ## Authentication

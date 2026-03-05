@@ -9,6 +9,7 @@ namespace TestPaliRESTApi.Controllers;
 public class FeaturesController(IFeaturesService features, ILogger<FeaturesController> logger) : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public IActionResult GetAll() => Ok(features.GetAll());
 
     [HttpPut("{user}")]

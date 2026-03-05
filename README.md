@@ -33,7 +33,7 @@ GET /palindrome?input=racecar
 | `dsdsd%%` | `false` |
 
 ### `GET /features`
-Returns the current API access flag per user.
+Returns the current API access flag per user. Requires JWT (`Authorization: Bearer <token>`).
 
 ### `PUT /features/{user}`
 Enables or disables API access for a specific user. Requires admin JWT (`Authorization: Bearer <token>`).

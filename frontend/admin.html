@@ -248,7 +248,6 @@
         <div class="todo-item">Rate limit login endpoint</div>
         <div class="todo-item">Add input length cap on palindrome endpoint</div>
         <div class="todo-item">Validate JWT audience</div>
-        <div class="todo-item">Require auth on GET /features</div>
       </div>
     </div>
 
@@ -289,7 +288,7 @@
 
       let flags = {};
       try {
-        const res = await fetch(API);
+        const res = await fetch(API, { headers: authHeader() });
         flags = await res.json();
       } catch {
         tbody.innerHTML = '<tr><td colspan="2" style="color:#dc2626;font-size:0.85rem;padding:1rem 0">Could not load features.</td></tr>';
