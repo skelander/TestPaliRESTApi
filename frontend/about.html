@@ -176,13 +176,14 @@
     <div class="section">
       <h2>Architecture</h2>
       <p>
-        The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes three controllers:
+        The backend is an <strong>ASP.NET Core MVC API</strong> running on <strong>Fly.io</strong>. It exposes four controllers:
       </p>
       <table>
-        <tr><td><code>POST /auth/login</code></td><td>Validates credentials server-side. Returns the username and role (<code>user</code> or <code>admin</code>), or 401 if invalid.</td></tr>
+        <tr><td><code>POST /auth/login</code></td><td>Validates credentials server-side. Returns the username, role, and a signed <strong>JWT token</strong> (8-hour expiry), or 401 if invalid.</td></tr>
         <tr><td><code>GET /palindrome?input=…</code></td><td>Checks if the input is a palindrome and returns a JSON result with <code>input</code>, <code>isPalindrome</code>, and <code>message</code>.</td></tr>
         <tr><td><code>GET /features</code></td><td>Returns the current API access flag for each user.</td></tr>
-        <tr><td><code>PUT /features/{user}</code></td><td>Enables or disables API access for a specific user.</td></tr>
+        <tr><td><code>PUT /features/{user}</code></td><td>Enables or disables API access for a specific user. Requires an admin JWT token.</td></tr>
+        <tr><td><code>GET /logs</code></td><td>Returns recent application log entries. Requires an admin JWT token.</td></tr>
       </table>
       <p style="margin-top:0.75rem">
         The frontend is a set of <strong>static HTML pages</strong> hosted on <strong>GitHub Pages</strong>. There are no frameworks — just vanilla HTML, CSS and JavaScript calling the API over HTTPS.
@@ -208,7 +209,7 @@
         <tr><td>Unit tests</td><td>Test the palindrome logic directly — no HTTP, no framework. Fast and focused on edge cases (phrases, mixed casing, punctuation, nulls).</td></tr>
         <tr><td>Integration tests</td><td>Spin up the full API in-process using <code>WebApplicationFactory</code> and send real HTTP requests. Verify status codes, response bodies and content types.</td></tr>
       </table>
-      <p style="margin-top:0.75rem">48 tests in total. A failing test blocks deployment.</p>
+      <p style="margin-top:0.75rem">51 tests in total. A failing test blocks deployment.</p>
     </div>
 
     <div class="section">
@@ -236,10 +237,10 @@
     <div class="section">
       <h2>Security note</h2>
       <p>
-        Login is validated server-side via <code>POST /auth/login</code> — credentials are no longer stored in the frontend code. The API checks the username and password and returns the user's role; the frontend never sees the credential store.
+        Login is validated server-side via <code>POST /auth/login</code>. On success the API issues a signed <strong>JWT token</strong> (HMAC-SHA256). The token is stored in <code>sessionStorage</code> and sent as a <code>Bearer</code> header on every admin request. Protected endpoints return 401 without a valid token.
       </p>
       <p>
-        The browser session is maintained with <code>sessionStorage</code>, which clears when the tab is closed. In a production app this would typically use short-lived JWT tokens or server-side sessions with HTTPS-only cookies.
+        The JWT secret key is stored as a <strong>Fly.io secret</strong> and injected at runtime — it is never in the source code. The browser session clears when the tab is closed.
       </p>
     </div>
   </div>

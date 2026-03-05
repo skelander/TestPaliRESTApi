@@ -163,6 +163,8 @@
         <li><span class="step-num">8</span>Fixed a second bug: entering <code>.</code> in the GUI caused a network error because a dot in a URL path segment breaks ASP.NET Core routing. Switched the endpoint to use a query parameter instead.</li>
         <li><span class="step-num">9</span><strong>Split the CI/CD pipeline</strong> into two independent workflows — one for the API, one for the frontend — each triggered by the files it cares about.</li>
         <li><span class="step-num">10</span><strong>Decoupled the frontend from the API</strong>: moved HTML files to a <code>frontend/</code> subfolder and replaced the hardcoded API URL with a GitHub repository variable injected at deploy time.</li>
+        <li><span class="step-num">11</span>Added <strong>structured logging</strong> to all controllers using <code>ILogger&lt;T&gt;</code>, backed by a custom in-memory log store. The admin page displays a live log viewer that polls <code>GET /logs</code> every 5 seconds.</li>
+        <li><span class="step-num">12</span>Added <strong>JWT authentication</strong>: login now issues a signed token; the admin endpoints <code>PUT /features/{user}</code> and <code>GET /logs</code> require a valid admin token. The signing key is stored as a Fly.io secret.</li>
       </ul>
     </div>
 
