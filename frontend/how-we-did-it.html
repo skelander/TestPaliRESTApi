@@ -79,36 +79,15 @@
     p:last-child { margin-bottom: 0; }
 
     .step-list {
-      list-style: none;
       margin-top: 0.75rem;
+      padding-left: 1.25rem;
     }
 
     .step-list li {
-      display: flex;
-      gap: 0.85rem;
-      align-items: flex-start;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid #f3f4f6;
       font-size: 0.875rem;
       color: #374151;
       line-height: 1.5;
-    }
-
-    .step-list li:last-child { border-bottom: none; }
-
-    .step-num {
-      flex-shrink: 0;
-      width: 1.4rem;
-      height: 1.4rem;
-      background: #ede9fe;
-      color: #4f46e5;
-      border-radius: 50%;
-      font-size: 0.7rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 0.1rem;
+      margin-bottom: 0.5rem;
     }
 
     code {
@@ -153,18 +132,18 @@
     <div class="section">
       <h2>What was built, step by step</h2>
       <ul class="step-list">
-        <li><span class="step-num">1</span>Started with a basic <strong>palindrome REST API</strong> in ASP.NET Core — one endpoint, one service, one test file.</li>
-        <li><span class="step-num">2</span>Added a <strong>GitHub Actions CI/CD pipeline</strong>: build → test → deploy to Fly.io on every push to <code>main</code>.</li>
-        <li><span class="step-num">3</span>Built a <strong>static HTML frontend</strong> on GitHub Pages — a palindrome checker that calls the live API.</li>
-        <li><span class="step-num">4</span>Added a <strong>login page</strong> with test accounts, then moved credentials server-side so they were no longer visible in the frontend source.</li>
-        <li><span class="step-num">5</span>Added <strong>per-user feature flags</strong> — the admin can enable or disable API access for each user from a toggle panel.</li>
-        <li><span class="step-num">6</span>Replaced hardcoded credentials with an <strong>EF Core in-memory database</strong>, seeded on startup.</li>
-        <li><span class="step-num">7</span>Fixed a <strong>bug</strong>: <code>dsdsd%%</code> was incorrectly reported as a palindrome because special characters were being stripped. Changed the logic to only strip whitespace.</li>
-        <li><span class="step-num">8</span>Fixed a second bug: entering <code>.</code> in the GUI caused a network error because a dot in a URL path segment breaks ASP.NET Core routing. Switched the endpoint to use a query parameter instead.</li>
-        <li><span class="step-num">9</span><strong>Split the CI/CD pipeline</strong> into two independent workflows — one for the API, one for the frontend — each triggered by the files it cares about.</li>
-        <li><span class="step-num">10</span><strong>Decoupled the frontend from the API</strong>: moved HTML files to a <code>frontend/</code> subfolder and replaced the hardcoded API URL with a GitHub repository variable injected at deploy time.</li>
-        <li><span class="step-num">11</span>Added <strong>structured logging</strong> to all controllers using <code>ILogger&lt;T&gt;</code>, backed by a custom in-memory log store. The admin page displays a live log viewer that polls <code>GET /logs</code> every 5 seconds.</li>
-        <li><span class="step-num">12</span>Added <strong>JWT authentication</strong>: login now issues a signed token. All feature and log endpoints require a valid token — admin-only for writes and logs, any authenticated user for reads. The signing key is stored as a Fly.io secret.</li>
+        <li>Started with a basic <strong>palindrome REST API</strong> in ASP.NET Core — one endpoint, one service, one test file.</li>
+        <li>Added a <strong>GitHub Actions CI/CD pipeline</strong>: build → test → deploy to Fly.io on every push to <code>main</code>.</li>
+        <li>Built a <strong>static HTML frontend</strong> on GitHub Pages — a palindrome checker that calls the live API.</li>
+        <li>Added a <strong>login page</strong> with test accounts, then moved credentials server-side so they were no longer visible in the frontend source.</li>
+        <li>Added <strong>per-user feature flags</strong> — the admin can enable or disable API access for each user from a toggle panel.</li>
+        <li>Replaced hardcoded credentials with an <strong>EF Core in-memory database</strong>, seeded on startup.</li>
+        <li>Fixed a <strong>bug</strong>: <code>dsdsd%%</code> was incorrectly reported as a palindrome because special characters were being stripped. Changed the logic to only strip whitespace.</li>
+        <li>Fixed a second bug: entering <code>.</code> in the GUI caused a network error because a dot in a URL path segment breaks ASP.NET Core routing. Switched the endpoint to use a query parameter instead.</li>
+        <li><strong>Split the CI/CD pipeline</strong> into two independent workflows — one for the API, one for the frontend — each triggered by the files it cares about.</li>
+        <li><strong>Decoupled the frontend from the API</strong>: moved HTML files to a <code>frontend/</code> subfolder and replaced the hardcoded API URL with a GitHub repository variable injected at deploy time.</li>
+        <li>Added <strong>structured logging</strong> to all controllers using <code>ILogger&lt;T&gt;</code>, backed by a custom in-memory log store. The admin page displays a live log viewer that polls <code>GET /logs</code> every 5 seconds.</li>
+        <li>Added <strong>JWT authentication</strong>: login now issues a signed token. All feature and log endpoints require a valid token — admin-only for writes and logs, any authenticated user for reads. The signing key is stored as a Fly.io secret.</li>
       </ul>
     </div>
 
