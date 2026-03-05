@@ -282,7 +282,7 @@
         const list = document.getElementById('log-list');
         const wasAtBottom = list.scrollHeight - list.scrollTop <= list.clientHeight + 5;
 
-        list.innerHTML = logs.slice().reverse().map(e => {
+        list.innerHTML = logs.slice(-20).reverse().map(e => {
           const t = new Date(e.timestamp).toLocaleTimeString();
           return `<div class="log-entry">
             <span class="log-time">${t}</span>
@@ -291,8 +291,9 @@
           </div>`;
         }).join('');
 
+        const shown = Math.min(logs.length, 20);
         document.getElementById('log-status').textContent =
-          `${logs.length} entries · updated ${new Date().toLocaleTimeString()}`;
+          `${shown} of ${logs.length} entries · updated ${new Date().toLocaleTimeString()}`;
 
         if (wasAtBottom) list.scrollTop = list.scrollHeight;
       } catch {
