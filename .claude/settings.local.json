@@ -1,0 +1,8 @@
+{
+  "defaultMode": "bypassPermissions",
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -NoProfile -Command \"& ''C:\\\\Program Files\\\\dotnet\\\\dotnet.exe'' test ''C:\\\\Users\\\\Rikard\\\\TestPaliRESTApi\\\\TestPaliRESTApi.Tests\\\\TestPaliRESTApi.Tests.csproj'' --configuration Release 2>&1 | Select-String -Pattern ''Failed|Passed|Error'' | Select-Object -Last 3\")"
+    ]
+  }
+}

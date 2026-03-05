@@ -220,6 +220,10 @@
     const LOGS_API = '__API_URL__/logs';
     const MANAGED_USERS = ['1', '2', '3'];
 
+    function authHeader() {
+      return { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` };
+    }
+
     function init() {
       if (sessionStorage.getItem('user') !== 'admin') {
         window.location.href = 'login.html';
@@ -266,7 +270,7 @@
         if (e.target.type !== 'checkbox') return;
         await fetch(`${API}/${e.target.dataset.user}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeader() },
           body: JSON.stringify({ enabled: e.target.checked }),
         });
         const msg = document.getElementById('saved-msg');
@@ -277,7 +281,7 @@
 
     async function refreshLogs() {
       try {
-        const res = await fetch(LOGS_API);
+        const res = await fetch(LOGS_API, { headers: authHeader() });
         const logs = await res.json();
         const list = document.getElementById('log-list');
         const wasAtBottom = list.scrollHeight - list.scrollTop <= list.clientHeight + 5;

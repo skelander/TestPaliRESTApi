@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestPaliRESTApi.Services;
 
@@ -11,6 +12,7 @@ public class FeaturesController(IFeaturesService features, ILogger<FeaturesContr
     public IActionResult GetAll() => Ok(features.GetAll());
 
     [HttpPut("{user}")]
+    [Authorize(Roles = "admin")]
     public IActionResult SetUser(string user, [FromBody] SetFeatureRequest request)
     {
         features.SetEnabled(user, request.Enabled);

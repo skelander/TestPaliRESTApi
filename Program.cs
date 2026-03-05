@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using TestPaliRESTApi.Data;
 using TestPaliRESTApi.Logging;
@@ -23,6 +26,20 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateAudience = false,
+            ValidateLifetime = true,
+        };
+    });
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -48,6 +65,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("GitHubPages");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

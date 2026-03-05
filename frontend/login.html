@@ -183,6 +183,7 @@
         if (res.ok) {
           const data = await res.json();
           sessionStorage.setItem('user', data.user);
+          sessionStorage.setItem('token', data.token);
           window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
         } else {
           errEl.style.display = 'block';
