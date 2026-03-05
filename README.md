@@ -67,6 +67,9 @@ Enables or disables API access for a specific user (admin only via the frontend)
 ## Project structure
 
 ```
+frontend/                        static HTML/CSS/JS (deployed to GitHub Pages)
+  login.html, index.html, admin.html, about.html
+
 TestPaliRESTApi/
   Controllers/   PalindromeController, AuthController, FeaturesController
   Services/      IPalindromeService, IAuthService, IFeaturesService + implementations
@@ -97,6 +100,6 @@ dotnet test TestPaliRESTApi.sln
 Two GitHub Actions workflows trigger on push to `main`:
 
 - **api.yml** — build → test → deploy to Fly.io (on `.cs`/`.csproj`/`Dockerfile`/`fly.toml` changes)
-- **frontend.yml** — deploy to GitHub Pages (on `.html`/`.css`/`.js` changes)
+- **frontend.yml** — deploy to GitHub Pages (on `frontend/**` changes); injects `API_URL` repo variable at build time
 
 A failing test blocks deployment.

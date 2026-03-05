@@ -4,16 +4,12 @@ on:
   push:
     branches: [main]
     paths:
-      - '*.html'
-      - '*.css'
-      - '*.js'
+      - 'frontend/**'
       - '.github/workflows/frontend.yml'
   pull_request:
     branches: [main]
     paths:
-      - '*.html'
-      - '*.css'
-      - '*.js'
+      - 'frontend/**'
       - '.github/workflows/frontend.yml'
 
 permissions:
@@ -31,13 +27,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Inject API URL
+        run: sed -i 's|__API_URL__|${{ vars.API_URL }}|g' frontend/*.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'frontend/'
 
       - name: Deploy to GitHub Pages
         id: deployment
